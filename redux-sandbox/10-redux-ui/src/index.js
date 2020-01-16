@@ -1,45 +1,33 @@
-import {createStore} from "redux";
+import {createStore, bindActionCreators}  from "redux";
+import reducer from "./reducer";
+import {inc,dec,rnd} from "./actions";
 
-
-const reducer = (state = 0,action) =>{
- switch (action.type) {
-     case 'INC' :
-         return state + 1;
-     case 'DEC' :
-         return state - 1;
-     case 'RND' :
-         return state + action.payload;
-
-     default :
-         return state;
- }
-
-};
 
 const store = createStore(reducer);
+const {dispatch} = store;
 
-const inc = () => ({type:'INC'});
-const dec = () => ({type:'DEC'});
-const rnd = (payload) => ({type:'RND',payload});
-
-
+const Dispatchers = bindActionCreators({
+        incDispatch : inc,
+        rndDispatch:  rnd,
+        decDispatch : dec,
+}, dispatch);
 
 document
     .getElementById('INC')
-    .addEventListener('click',()=> store.dispatch(inc()));
+    .addEventListener('click', () => Dispatchers.incDispatch());
 document
     .getElementById('DEC')
-    .addEventListener('click',()=> store.dispatch(dec()));
+    .addEventListener('click', () => Dispatchers.decDispatch());
 document
     .getElementById('RND')
-    .addEventListener('click',()=> {
-        const payLoad = Math.floor(Math.random()*10);
-        store.dispatch(rnd(payLoad)
-        )});
+    .addEventListener('click', () => {
+        const payLoad = Math.floor(Math.random() * 10);
+        Dispatchers.rndDispatch(payLoad);
+    });
 
 
-const update = () =>{
-document.getElementById('counter').innerHTML = store.getState();
+const update = () => {
+    document.getElementById('counter').innerHTML = store.getState();
 };
 
 store.subscribe(update);
