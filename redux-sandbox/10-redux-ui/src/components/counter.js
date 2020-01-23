@@ -1,20 +1,41 @@
 import React, {Component} from "react";
+import {connect} from 'react-redux';
+import{bindActionCreators} from "redux";
+import  * as actions from '../actions';
 
-export default class Counter extends Component {
+class Counter extends Component {
 
     render() {
-        const counter = this.props.counter;
-        const inc = this.props.inc;
-        const dec = this.props.dec;
-        const rnd = this.props.rnd;
-
         return (
             <div>
-                <h2>{counter}</h2>
-                <button onClick={dec}>DEC</button>
-                <button onClick={inc}>INC</button>
-                <button onClick={rnd}>RND</button>
+                <h2>{this.props.counter}</h2>
+
+                <button onClick={this.props.inc}>INC</button>
+                <button onClick={this.props.dec}>DEC</button>
+                <button onClick={this.props.rnd}>RND</button>
+
             </div>
         )
     }
 }
+
+const mapStateToProps = (state) =>{
+  return{
+      counter : state
+  }
+};
+
+const mapDispatchToProps = (dispatch) =>{
+  const {inc,dec,rnd} = bindActionCreators(actions,dispatch);
+
+  return{
+
+      inc,
+      dec,
+      rnd : () => {
+          rnd(10)
+      }
+  }
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(Counter);
